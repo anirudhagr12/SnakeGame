@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap");
+
+:root {
+  --bg-top: #041830;
+  --bg-mid: #072546;
+  --bg-bot: #0d1229;
+  --panel: rgba(10, 24, 45, 0.88);
+  --line: rgba(117, 227, 255, 0.35);
+  --text-main: #e8fbff;
+  --text-soft: #97c6df;
+  --snake: #66ffd6;
+  --snake-head: #c2fff0;
+  --food: #ff8ca3;
+  --power-speed: #ffd966;
+  --power-slow: #8db7ff;
+  --power-bonus: #c596ff;
+  --glow: 0 0 24px rgba(89, 239, 255, 0.25);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Rajdhani", "Trebuchet MS", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(12, 117, 173, 0.4), transparent 34%),
+    radial-gradient(circle at 85% 0%, rgba(144, 45, 186, 0.2), transparent 30%),
+    linear-gradient(165deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bot) 100%);
+  display: grid;
+  place-items: center;
+  padding: max(10px, env(safe-area-inset-top))
+    max(10px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom))
+    max(10px, env(safe-area-inset-left));
+}
+
+.app-shell {
+  width: min(100%, 460px);
+  min-height: calc(100dvh - 22px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  animation: rise-in 380ms ease-out;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-card {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(3, 37, 73, 0.88), rgba(9, 22, 52, 0.75));
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: var(--glow);
+}
+
+.label {
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.stat-card strong {
+  font-family: "Orbitron", "Verdana", sans-serif;
+  display: block;
+  margin-top: 2px;
+  font-size: 1.35rem;
+}
+
+.board-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(7, 34, 70, 0.85), rgba(9, 11, 30, 0.75));
+  border: 1px solid rgba(116, 214, 255, 0.35);
+  box-shadow:
+    0 14px 36px rgba(0, 6, 28, 0.5),
+    0 0 0 1px rgba(87, 196, 255, 0.15) inset;
+  display: grid;
+  place-items: center;
+  padding: 14px 10px 10px;
+  touch-action: none;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 220px);
+  aspect-ratio: 20 / 28;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #001b35 0%, #030e21 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(117, 227, 255, 0.2),
+    inset 0 0 20px rgba(76, 152, 225, 0.2);
+}
+
+.status-chip {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 5px 10px;
+  font-family: "Orbitron", "Verdana", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  color: #dff9ff;
+  border: 1px solid rgba(154, 233, 255, 0.45);
+  background: rgba(5, 35, 71, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 26px;
+  background: linear-gradient(180deg, rgba(2, 13, 32, 0.3), rgba(2, 13, 32, 0.86));
+}
+
+.overlay.visible {
+  display: grid;
+}
+
+.overlay h1,
+.overlay h2 {
+  margin: 0;
+  font-family: "Orbitron", "Verdana", sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.overlay p {
+  margin: 0;
+  color: #c4def4;
+  font-size: 1.02rem;
+}
+
+button {
+  margin-inline: auto;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(186, 237, 255, 0.62);
+  font-family: "Orbitron", "Verdana", sans-serif;
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  color: #041224;
+  background: linear-gradient(145deg, #77ebff, #99f6d9);
+  box-shadow: 0 0 18px rgba(118, 255, 235, 0.36);
+}
+
+.controls-hint {
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  padding-bottom: max(2px, env(safe-area-inset-bottom));
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-height: 700px) {
+  .app-shell {
+    gap: 8px;
+  }
+
+  .controls-hint {
+    font-size: 0.86rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

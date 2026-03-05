@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Neon Snake</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hud" aria-label="Game stats">
+        <div class="stat-card">
+          <span class="label">Score</span>
+          <strong id="scoreValue">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="label">Best</span>
+          <strong id="bestValue">0</strong>
+        </div>
+      </header>
+
+      <section class="board-wrap">
+        <canvas
+          id="gameCanvas"
+          width="400"
+          height="560"
+          aria-label="Snake game board"
+          role="img"
+        ></canvas>
+
+        <div class="status-chip" id="effectChip" aria-live="polite">
+          No effect
+        </div>
+
+        <div class="overlay visible" id="startOverlay">
+          <h1>Neon Snake</h1>
+          <p>Swipe to steer. Eat fruit, grab powerups, avoid walls and yourself.</p>
+          <button id="startBtn" aria-label="Start game">Start Game</button>
+        </div>
+
+        <div class="overlay" id="gameOverOverlay">
+          <h2>Game Over</h2>
+          <p>Your score: <span id="finalScore">0</span></p>
+          <button id="restartBtn" aria-label="Restart game">Play Again</button>
+        </div>
+      </section>
+
+      <footer class="controls-hint" aria-label="Controls hint">
+        Swipe on the board to move. Keyboard: Arrow keys / WASD.
+      </footer>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
