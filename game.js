@@ -50,9 +50,6 @@ const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScore = document.getElementById("finalScore");
 const startBtn = document.getElementById("startBtn");
 const restartBtn = document.getElementById("restartBtn");
-const helpBtn = document.getElementById("helpBtn");
-const helpPanel = document.getElementById("helpPanel");
-const closeHelpBtn = document.getElementById("closeHelpBtn");
 
 const state = {
   snake: [],
@@ -431,16 +428,6 @@ function updateEffectChip() {
     timed.type === "speed" ? "rgba(255, 217, 102, 0.9)" : "rgba(141, 183, 255, 0.9)";
 }
 
-function openHelpPanel() {
-  helpPanel.hidden = false;
-  document.body.style.overflow = "hidden";
-}
-
-function closeHelpPanel() {
-  helpPanel.hidden = true;
-  document.body.style.overflow = "";
-}
-
 function frame(now) {
   const deltaMs = Math.min(48, now - state.lastTickAt || 0);
   state.lastTickAt = now;
@@ -542,33 +529,6 @@ function setupInputHandlers() {
     startGame();
   });
 
-  helpBtn.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    openHelpPanel();
-  });
-  helpBtn.addEventListener("click", () => {
-    openHelpPanel();
-  });
-
-  closeHelpBtn.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    closeHelpPanel();
-  });
-  closeHelpBtn.addEventListener("click", () => {
-    closeHelpPanel();
-  });
-
-  helpPanel.addEventListener("pointerup", (event) => {
-    if (event.target === helpPanel) {
-      closeHelpPanel();
-    }
-  });
-  helpPanel.addEventListener("click", (event) => {
-    if (event.target === helpPanel) {
-      closeHelpPanel();
-    }
-  });
-
   window.addEventListener("resize", () => {
     resizeCanvas();
     render();
@@ -588,8 +548,11 @@ function setupInputHandlers() {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !helpPanel.hidden) {
-      closeHelpPanel();
+    if (event.key === "Escape") {
+      const openHelp = document.querySelector(".help-details[open]");
+      if (openHelp) {
+        openHelp.removeAttribute("open");
+      }
     }
   });
 }
