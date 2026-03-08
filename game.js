@@ -20,6 +20,7 @@ const CONFIG = {
     speed: "#ffd966",
     slow: "#8db7ff",
     bonus: "#c596ff",
+    shrink: "#ffb86b",
   },
 };
 
@@ -37,7 +38,7 @@ const OPPOSITE_DIRECTION = {
   right: "left",
 };
 
-const POWERUPS = ["speed", "slow", "bonus"];
+const POWERUPS = ["speed", "slow", "bonus", "shrink"];
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -49,6 +50,9 @@ const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScore = document.getElementById("finalScore");
 const startBtn = document.getElementById("startBtn");
 const restartBtn = document.getElementById("restartBtn");
+const helpBtn = document.getElementById("helpBtn");
+const helpPanel = document.getElementById("helpPanel");
+const closeHelpBtn = document.getElementById("closeHelpBtn");
 
 const state = {
   snake: [],
@@ -58,6 +62,7 @@ const state = {
   powerup: null,
   activeEffects: {
     timed: null,
+    instant: null,
   },
   score: 0,
   bestScore: 0,
@@ -131,6 +136,7 @@ function restartGame() {
   state.food = null;
   state.powerup = null;
   state.activeEffects.timed = null;
+  state.activeEffects.instant = null;
   state.score = 0;
   state.tickMs = CONFIG.tickMsBase;
   state.accumulatorMs = 0;
@@ -194,6 +200,25 @@ function applyPowerup(type) {
   if (type === "bonus") {
     state.score += CONFIG.pointsBonusPowerup;
     scoreValue.textContent = String(state.score);
+    state.activeEffects.instant = {
+      label: "+25 Bonus",
+      color: "rgba(197, 150, 255, 0.95)",
+      expiresAt: performance.now() + 1200,
+    };
+    updateEffectChip();
+    return;
+  }
+  if (type === "shrink") {
+    if (state.snake.length > 3) {
+      const removable = Math.min(3, state.snake.length - 3);
+      state.snake.splice(state.snake.length - removable, removable);
+    }
+    state.activeEffects.instant = {
+      label: "Shrink -3",
+      color: "rgba(255, 184, 107, 0.95)",
+      expiresAt: performance.now() + 1200,
+    };
+    updateEffectChip();
     return;
   }
   state.activeEffects.timed = {
@@ -206,6 +231,10 @@ function applyPowerup(type) {
 
 function clearExpiredEffects(nowMs) {
   const timed = state.activeEffects.timed;
+  const instant = state.activeEffects.instant;
+  if (instant && nowMs >= instant.expiresAt) {
+    state.activeEffects.instant = null;
+  }
   if (!timed) {
     return;
   }
@@ -349,7 +378,9 @@ function renderObjects(cellSize) {
         ? CONFIG.colors.speed
         : state.powerup.type === "slow"
           ? CONFIG.colors.slow
-          : CONFIG.colors.bonus;
+          : state.powerup.type === "bonus"
+            ? CONFIG.colors.bonus
+            : CONFIG.colors.shrink;
     drawRoundedCell(px + 2, py + 2, cellSize - 4, 9, color);
   }
 
@@ -378,6 +409,13 @@ function render() {
 }
 
 function updateEffectChip() {
+  const instant = state.activeEffects.instant;
+  if (instant && performance.now() < instant.expiresAt) {
+    effectChip.textContent = instant.label;
+    effectChip.style.borderColor = instant.color;
+    return;
+  }
+
   const timed = state.activeEffects.timed;
   if (!timed) {
     effectChip.textContent = "No effect";
@@ -391,6 +429,14 @@ function updateEffectChip() {
   effectChip.textContent = `${label} ${secs}s`;
   effectChip.style.borderColor =
     timed.type === "speed" ? "rgba(255, 217, 102, 0.9)" : "rgba(141, 183, 255, 0.9)";
+}
+
+function openHelpPanel() {
+  helpPanel.hidden = false;
+}
+
+function closeHelpPanel() {
+  helpPanel.hidden = true;
 }
 
 function frame(now) {
@@ -494,6 +540,20 @@ function setupInputHandlers() {
     startGame();
   });
 
+  helpBtn.addEventListener("click", () => {
+    openHelpPanel();
+  });
+
+  closeHelpBtn.addEventListener("click", () => {
+    closeHelpPanel();
+  });
+
+  helpPanel.addEventListener("click", (event) => {
+    if (event.target === helpPanel) {
+      closeHelpPanel();
+    }
+  });
+
   window.addEventListener("resize", () => {
     resizeCanvas();
     render();
@@ -509,6 +569,12 @@ function setupInputHandlers() {
       state.pausedBeforeHidden = false;
       state.status = "running";
       state.lastTickAt = performance.now();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !helpPanel.hidden) {
+      closeHelpPanel();
     }
   });
 }

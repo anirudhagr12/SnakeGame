@@ -53,6 +53,13 @@ body {
   animation: rise-in 380ms ease-out;
 }
 
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: start;
+}
+
 .hud {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -163,6 +170,113 @@ button {
   color: #041224;
   background: linear-gradient(145deg, #77ebff, #99f6d9);
   box-shadow: 0 0 18px rgba(118, 255, 235, 0.36);
+}
+
+.help-btn {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: #e6fbff;
+  background: linear-gradient(145deg, rgba(34, 106, 162, 0.95), rgba(26, 50, 98, 0.95));
+}
+
+.help-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(4, 10, 28, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.help-card {
+  width: min(100%, 460px);
+  max-height: min(82dvh, 760px);
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(128, 218, 255, 0.42);
+  background: linear-gradient(170deg, rgba(7, 34, 70, 0.97), rgba(8, 16, 42, 0.96));
+  padding: 16px;
+  box-shadow: 0 18px 42px rgba(0, 6, 28, 0.55);
+}
+
+.help-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.help-head h2,
+.help-card h3 {
+  margin: 0;
+  font-family: "Orbitron", "Verdana", sans-serif;
+}
+
+.help-card p {
+  margin: 10px 0;
+  color: #d6edff;
+}
+
+.help-list {
+  margin: 8px 0 12px;
+  padding-left: 18px;
+  color: #c4def4;
+}
+
+.help-list li {
+  margin-bottom: 6px;
+}
+
+.help-close {
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  background: linear-gradient(145deg, #9fdcff, #b2ffe6);
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  margin-right: 7px;
+  vertical-align: middle;
+  box-shadow: 0 0 10px rgba(140, 208, 255, 0.45);
+}
+
+.swatch.speed {
+  background: #ffd966;
+}
+
+.swatch.slow {
+  background: #8db7ff;
+}
+
+.swatch.bonus {
+  background: #c596ff;
+}
+
+.swatch.shrink {
+  background: #ffb86b;
+}
+
+.swatch.food {
+  background: #ff8ca3;
+}
+
+.swatch.snake {
+  background: #66ffd6;
+}
+
+.swatch.snake-head {
+  background: #c2fff0;
 }
 
 .controls-hint {

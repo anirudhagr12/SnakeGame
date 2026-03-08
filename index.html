@@ -8,16 +8,19 @@
   </head>
   <body>
     <main class="app-shell">
-      <header class="hud" aria-label="Game stats">
-        <div class="stat-card">
-          <span class="label">Score</span>
-          <strong id="scoreValue">0</strong>
-        </div>
-        <div class="stat-card">
-          <span class="label">Best</span>
-          <strong id="bestValue">0</strong>
-        </div>
-      </header>
+      <div class="top-row">
+        <header class="hud" aria-label="Game stats">
+          <div class="stat-card">
+            <span class="label">Score</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="label">Best</span>
+            <strong id="bestValue">0</strong>
+          </div>
+        </header>
+        <button id="helpBtn" class="help-btn" aria-label="Open game help">?</button>
+      </div>
 
       <section class="board-wrap">
         <canvas
@@ -34,7 +37,7 @@
 
         <div class="overlay visible" id="startOverlay">
           <h1>Neon Snake</h1>
-          <p>Swipe to steer. Eat fruit, grab powerups, avoid walls and yourself.</p>
+          <p>Swipe to steer. Eat fruit, grab powerups, wrap edges, avoid yourself.</p>
           <button id="startBtn" aria-label="Start game">Start Game</button>
         </div>
 
@@ -49,6 +52,35 @@
         Swipe on the board to move. Keyboard: Arrow keys / WASD.
       </footer>
     </main>
+
+    <section id="helpPanel" class="help-panel" hidden aria-labelledby="helpTitle">
+      <div class="help-card" role="dialog" aria-modal="true">
+        <div class="help-head">
+          <h2 id="helpTitle">How To Play</h2>
+          <button id="closeHelpBtn" class="help-close" aria-label="Close help">Close</button>
+        </div>
+        <p>Move the snake, eat food, use powerups, and avoid hitting your own body.</p>
+        <ul class="help-list">
+          <li>Controls: Swipe on mobile. Keyboard: Arrow keys / WASD.</li>
+          <li>Wrap mode: Crossing an edge brings you from the opposite side.</li>
+          <li>Food gives +10 score and grows the snake.</li>
+          <li>Best score is saved on your device.</li>
+        </ul>
+        <h3>Powerups</h3>
+        <ul class="help-list">
+          <li><span class="swatch speed"></span>Speed (yellow): Snake moves faster for 6 seconds.</li>
+          <li><span class="swatch slow"></span>Slow (blue): Snake moves slower for 6 seconds.</li>
+          <li><span class="swatch bonus"></span>Bonus (purple): Instant +25 score.</li>
+          <li><span class="swatch shrink"></span>Shrink (orange): Removes 3 tail cells (minimum length 3).</li>
+        </ul>
+        <h3>Color Legend</h3>
+        <ul class="help-list">
+          <li><span class="swatch food"></span>Food</li>
+          <li><span class="swatch snake"></span>Snake body</li>
+          <li><span class="swatch snake-head"></span>Snake head</li>
+        </ul>
+      </div>
+    </section>
 
     <script src="./game.js"></script>
   </body>
