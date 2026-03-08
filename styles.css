@@ -194,6 +194,10 @@ button {
   backdrop-filter: blur(4px);
 }
 
+.help-panel[hidden] {
+  display: none;
+}
+
 .help-card {
   width: min(100%, 460px);
   max-height: min(82dvh, 760px);
