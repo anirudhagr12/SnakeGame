@@ -73,7 +73,6 @@ const state = {
   rafId: 0,
   pausedBeforeHidden: false,
   touchStart: null,
-  suppressHelpOpenUntil: 0,
 };
 
 function loadBestScore() {
@@ -433,15 +432,13 @@ function updateEffectChip() {
 }
 
 function openHelpPanel() {
-  if (Date.now() < state.suppressHelpOpenUntil) {
-    return;
-  }
   helpPanel.hidden = false;
+  document.body.style.overflow = "hidden";
 }
 
 function closeHelpPanel() {
-  state.suppressHelpOpenUntil = Date.now() + 420;
   helpPanel.hidden = true;
+  document.body.style.overflow = "";
 }
 
 function frame(now) {
@@ -545,56 +542,32 @@ function setupInputHandlers() {
     startGame();
   });
 
-  helpBtn.addEventListener("click", (event) => {
+  helpBtn.addEventListener("pointerup", (event) => {
     event.preventDefault();
-    event.stopPropagation();
+    openHelpPanel();
+  });
+  helpBtn.addEventListener("click", () => {
     openHelpPanel();
   });
 
-  closeHelpBtn.addEventListener("click", (event) => {
+  closeHelpBtn.addEventListener("pointerup", (event) => {
     event.preventDefault();
-    event.stopPropagation();
+    closeHelpPanel();
+  });
+  closeHelpBtn.addEventListener("click", () => {
     closeHelpPanel();
   });
 
+  helpPanel.addEventListener("pointerup", (event) => {
+    if (event.target === helpPanel) {
+      closeHelpPanel();
+    }
+  });
   helpPanel.addEventListener("click", (event) => {
     if (event.target === helpPanel) {
       closeHelpPanel();
     }
   });
-
-  // Mobile browsers can dispatch synthetic click after touchend.
-  closeHelpBtn.addEventListener(
-    "touchend",
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      closeHelpPanel();
-    },
-    { passive: false }
-  );
-
-  helpBtn.addEventListener(
-    "touchend",
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      openHelpPanel();
-    },
-    { passive: false }
-  );
-
-  helpPanel.addEventListener(
-    "touchend",
-    (event) => {
-      if (event.target === helpPanel) {
-        event.preventDefault();
-        event.stopPropagation();
-        closeHelpPanel();
-      }
-    },
-    { passive: false }
-  );
 
   window.addEventListener("resize", () => {
     resizeCanvas();

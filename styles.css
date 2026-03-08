@@ -181,21 +181,25 @@ button {
   font-size: 1.1rem;
   color: #e6fbff;
   background: linear-gradient(145deg, rgba(34, 106, 162, 0.95), rgba(26, 50, 98, 0.95));
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .help-panel {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 9999;
   display: grid;
   place-items: center;
   padding: 16px;
   background: rgba(4, 10, 28, 0.72);
   backdrop-filter: blur(4px);
+  touch-action: none;
 }
 
 .help-panel[hidden] {
-  display: none;
+  display: none !important;
+  pointer-events: none;
 }
 
 .help-card {
@@ -243,6 +247,8 @@ button {
   border-radius: 10px;
   font-size: 0.72rem;
   background: linear-gradient(145deg, #9fdcff, #b2ffe6);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .swatch {
