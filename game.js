@@ -1,15 +1,17 @@
 "use strict";
 
+const isCompactMobile = window.matchMedia("(max-width: 640px)").matches;
+
 const CONFIG = {
   gridSize: 20,
-  boardCols: 20,
-  boardRows: 28,
+  boardCols: isCompactMobile ? 16 : 20,
+  boardRows: isCompactMobile ? 22 : 28,
   tickMsBase: 130,
   powerupDurationMs: 6000,
   powerupSpawnChance: 0.35,
   pointsFood: 10,
   pointsBonusPowerup: 25,
-  swipeThresholdPx: 24,
+  swipeThresholdPx: isCompactMobile ? 18 : 24,
   colors: {
     grid: "rgba(111, 176, 255, 0.08)",
     snake: "#66ffd6",
@@ -89,6 +91,7 @@ function saveBestScore() {
 function resizeCanvas() {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const rect = canvas.getBoundingClientRect();
+  canvas.style.aspectRatio = `${CONFIG.boardCols} / ${CONFIG.boardRows}`;
   canvas.width = Math.floor(rect.width * dpr);
   canvas.height = Math.floor(rect.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -213,18 +216,16 @@ function clearExpiredEffects(nowMs) {
   }
 }
 
-function checkCollision(nextHead) {
-  const hitWall =
-    nextHead.x < 0 ||
-    nextHead.y < 0 ||
-    nextHead.x >= CONFIG.boardCols ||
-    nextHead.y >= CONFIG.boardRows;
+function wrapPosition(pos) {
+  return {
+    x: (pos.x + CONFIG.boardCols) % CONFIG.boardCols,
+    y: (pos.y + CONFIG.boardRows) % CONFIG.boardRows,
+  };
+}
 
-  if (hitWall) {
-    return true;
-  }
-
-  return state.snake.some((seg) => seg.x === nextHead.x && seg.y === nextHead.y);
+function checkCollision(nextHead, willGrow) {
+  const bodyToCheck = willGrow ? state.snake : state.snake.slice(0, -1);
+  return bodyToCheck.some((seg) => seg.x === nextHead.x && seg.y === nextHead.y);
 }
 
 function handleDirectionInput(nextDirection) {
@@ -267,20 +268,21 @@ function updateGame(deltaMs) {
 
     const vec = DIRECTION_VECTORS[state.direction];
     const currentHead = state.snake[0];
-    const nextHead = {
+    const rawNextHead = {
       x: currentHead.x + vec.x,
       y: currentHead.y + vec.y,
     };
+    const nextHead = wrapPosition(rawNextHead);
+    const willEatFood = isSameCell(nextHead, state.food);
 
-    if (checkCollision(nextHead)) {
+    if (checkCollision(nextHead, willEatFood)) {
       endGame();
       break;
     }
 
     state.snake.unshift(nextHead);
 
-    const ateFood = isSameCell(nextHead, state.food);
-    if (ateFood) {
+    if (willEatFood) {
       state.score += CONFIG.pointsFood;
       scoreValue.textContent = String(state.score);
       spawnFood();

@@ -99,7 +99,7 @@ body {
 #gameCanvas {
   width: 100%;
   height: auto;
-  max-height: calc(100dvh - 220px);
+  max-height: calc(100dvh - 190px);
   aspect-ratio: 20 / 28;
   border-radius: 10px;
   background: linear-gradient(180deg, #001b35 0%, #030e21 100%);
@@ -190,6 +190,12 @@ button {
 
   .controls-hint {
     font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 640px) {
+  #gameCanvas {
+    max-height: calc(100dvh - 170px);
   }
 }
 
