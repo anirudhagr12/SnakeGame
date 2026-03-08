@@ -73,6 +73,7 @@ const state = {
   rafId: 0,
   pausedBeforeHidden: false,
   touchStart: null,
+  suppressHelpOpenUntil: 0,
 };
 
 function loadBestScore() {
@@ -432,10 +433,14 @@ function updateEffectChip() {
 }
 
 function openHelpPanel() {
+  if (Date.now() < state.suppressHelpOpenUntil) {
+    return;
+  }
   helpPanel.hidden = false;
 }
 
 function closeHelpPanel() {
+  state.suppressHelpOpenUntil = Date.now() + 420;
   helpPanel.hidden = true;
 }
 
@@ -540,11 +545,15 @@ function setupInputHandlers() {
     startGame();
   });
 
-  helpBtn.addEventListener("click", () => {
+  helpBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     openHelpPanel();
   });
 
-  closeHelpBtn.addEventListener("click", () => {
+  closeHelpBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     closeHelpPanel();
   });
 
@@ -553,6 +562,39 @@ function setupInputHandlers() {
       closeHelpPanel();
     }
   });
+
+  // Mobile browsers can dispatch synthetic click after touchend.
+  closeHelpBtn.addEventListener(
+    "touchend",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      closeHelpPanel();
+    },
+    { passive: false }
+  );
+
+  helpBtn.addEventListener(
+    "touchend",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openHelpPanel();
+    },
+    { passive: false }
+  );
+
+  helpPanel.addEventListener(
+    "touchend",
+    (event) => {
+      if (event.target === helpPanel) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeHelpPanel();
+      }
+    },
+    { passive: false }
+  );
 
   window.addEventListener("resize", () => {
     resizeCanvas();
